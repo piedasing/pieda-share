@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TodoList jQuery</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #a0a0a0;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="alert alert-success text-center" role="alert">
+        jQuery
+      </div>
+      <div class="row my-4">
+        <div class="col-10">
+          <div class="input-group mb-3">
+            <input type="text" id="addInput" class="form-control" placeholder="TodoList" />
+          </div>
+        </div>
+        <div class="col-2 text-right">
+          <button id="addBtn"  class="btn btn-outline-primary">新增</button>
+        </div>
+      </div>
+
+      <div class="todolist row">
+        <div class="col-12">
+          <ul class="list-group">
+            <!-- 要顯示的清單 -->
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+  <script>
+    ;(function($) {
+      const todos = []
+      // 新增todo
+      $('#addInput').on('keypress', function(e) {
+        if(e.keyCode === 13) {
+          if (this.value === '') {
+            return
+          }
+          // 呼叫顯示清單function，並清空輸入框
+          todoList(this.value)
+          this.value = ''
+        }
+      })
+      $('#addBtn').on('click', function(e) {
+        const value = $('#addInput')[0].value
+        if (value === '') {
+          return
+        }
+        // 呼叫顯示清單function，並清空輸入框
+        todoList(value)
+        $('#addInput').value = ''
+      })
+
+      // 顯示todolist
+      function todoList (newTodo) {
+        const timestamp = Math.floor(new Date())
+        todos.push({
+          id: timestamp,
+          text: newTodo,
+          edit: false,
+          completed: false
+        })
+        console.log(todos)
+
+        $('.todolist > .col-12 > .list-group').append(`
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-6 showTodo">
+                <input type="checkbox" class="status" />
+                <span class="align-middle">${newTodo}</span>
+              </div>
+              <div class="col-6 editTodo">
+                <input type="text" class="form-control" placeholder="TodoList" />
+              </div>
+              <div class="col-6 text-right">
+                <button class="edit btn btn-outline-primary" data-key="${timestamp}">編輯</button>
+                <button class="delete btn btn-outline-danger">刪除</button>
+              </div>
+            </div>
+          </li>
+        `)
+        $('.editTodo').hide()
+        $('.showTodo').show()
+
+        // 判斷是否完成
+        $('.status').each(function () {
+          $(this).click(function () {
+            var status = $(this).prop('checked')
+            if (status) {
+              $(this).parent().children('span').addClass('completed')
+            } else {
+              $(this).parent().children('span').removeClass('completed')
+            }
+          })
+        })
+
+        // 刪除todo
+        $('.delete').each(function () {
+          $(this).click(function () {
+            $(this).closest('li').remove() 
+          })
+        })
+        
+        // 編輯todo
+        $('.edit').each(function () {
+          $(this).click(function () {
+            const row = $(this).parent().parent()
+            // const row = $(this).closest('li').children('.row')
+            row.children('.showTodo').hide()
+            row.children('.editTodo').show()
+            const text = row.children('.showTodo').children('span')[0].innerText
+            row.children('.editTodo').children('input')[0].value = text
+          })
+        })
+
+        $('.editTodo > input').on('keypress', function (e) {
+          if (e.keyCode === 13) {
+            // const row = $(this).parent().parent()
+            const row = $(this).closest('li').children('.row')
+            const newText = $(this).val()
+            row.children('.showTodo').children('span')[0].innerText = newText
+            row.children('.showTodo').show()
+            row.children('.editTodo').hide()
+          }
+        })
+      }
+
+    })($)
+  </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TodoList vue</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: #a0a0a0;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="alert alert-success  text-center" role="alert">
+        Vue
+      </div>
+      <div class="row my-4">
+        <div class="col-10">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="TodoList"
+              v-model.trim="inputValue"
+              @keypress.enter="addTodo"
+            />
+          </div>
+        </div>
+        <div class="col-2 text-right">
+          <button class="btn btn-outline-primary" @click="addTodo">新增</button>
+        </div>
+      </div>
+
+      <div class="todolist row">
+        <div class="col-12">
+          <ul class="list-group">
+            <li class="list-group-item" v-for="(todo, key) in todos">
+              <div class="row">
+                <div class="col-6" v-if="!todo.edit">
+                  <input type="checkbox" aria-label="Checkbox for following text input" v-model="todo.completed" />
+                  <span class="align-middle"
+                    :class="{'completed': todo.completed}"
+                  >{{ todo.text }}</span>
+                </div>
+                <div class="col-6" v-if="todo.edit">
+                  <input type="text" class="form-control" placeholder="TodoList"
+                    v-if="todo.edit"
+                    v-model="cacheValue"
+                    @keypress.enter="doneEdit(todo)"
+                    @blur="doneEdit(todo)"
+                  />
+                </div>
+                <div class="col-6 text-right">
+                  <button class="btn btn-outline-primary" @click="editTodo(todo)">編輯</button>
+                  <button class="btn btn-outline-danger" @click="delTodo(key)">刪除</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js'></script>
+  <script>
+    ;(function(Vue) {
+      const vm = new Vue({
+        el: '#app',
+        data () {
+          return {
+            inputValue: '',
+            cacheValue: '',
+            todos: []
+          }
+        },
+        methods: {
+          addTodo () {
+            if (this.inputValue === '') {
+              return
+            }
+            const timestamp = Math.floor(new Date())
+            this.todos.push({
+              id: timestamp,
+              text: this.inputValue,
+              edit: false,
+              completed: false
+            })
+            this.inputValue = ''
+            console.log(this.todos)
+          },
+          delTodo (key) {
+            this.todos.splice(key, 1)
+          },
+          editTodo (todo) {
+            todo.edit = true
+            this.cacheValue = todo.text
+          },
+          doneEdit (todo) {
+            todo.text = this.cacheValue
+            todo.edit = false
+          }
+        }
+      })
+    })(Vue)
+  </script>
+</body>
+</html>

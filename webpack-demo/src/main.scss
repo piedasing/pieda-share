@@ -1,0 +1,47 @@
+$primary: #808080;
+
+@mixin size($w, $h: $w) {
+  width: $w;
+  height: $h;
+}
+
+@mixin flex($justifyContent, $alignItems: $justifyContent) {
+  display: flex;
+  justify-content: $justifyContent;
+  align-items: $alignItems;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  @include size(100vw, 100vh);
+  overflow: hidden;
+  background-color: #EEE;
+  @include flex(center);
+  flex-direction: column;
+}
+
+h1 {
+  color: $primary;
+  font-size: 1.5rem;
+}
+
+ul {
+  list-style: none;
+  li {
+    line-height: 2;
+    &:nth-child(1) {
+      color: lighten($primary, 30%);
+    }
+    &:nth-child(2) {
+      color: $primary;
+    }
+    &:nth-child(3) {
+      color: darken($primary, 30%);
+    }
+  }
+}

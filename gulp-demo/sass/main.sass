@@ -1,0 +1,46 @@
+// mixin
+@mixin size($w, $h:$w)
+  width: $w
+  height: $h
+
+@mixin center()
+  display: flex
+  justify-content: center
+  align-items: center
+
+// extend
+%size
+  width: 100%
+  height: 100px
+
+%center
+  display: flex
+  justify-content: center
+  align-items: center
+
+.test1
+  +size(60%, 100px)
+  +center
+  background-color: #000
+  transform: translate(500px, 50px) scale(1.5)
+  p
+    font-size: 16px
+    color: #fff
+
+.test2
+  +size(20rem)
+  @extend %center
+  background-color: #3366ff
+
+.test3
+  background-color: #ff3366
+  @extend %size
+  +center
+
+.test4
+  background-color: #6633ff
+  @extend %size
+  +center
+
+/* 123 */
+// 123
